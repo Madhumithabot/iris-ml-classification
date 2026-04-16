@@ -1,0 +1,49 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report
+
+# Load dataset
+iris = load_iris()
+
+# Convert dataset to DataFrame
+data = pd.DataFrame(iris.data, columns=iris.feature_names)
+data['species'] = iris.target
+
+print("First 5 rows of dataset:")
+print(data.head())
+
+# Basic data analysis
+print("\nDataset description:")
+print(data.describe())
+
+# Plot feature relationships
+plt.scatter(data['sepal length (cm)'], data['petal length (cm)'], c=data['species'])
+plt.xlabel("Sepal Length")
+plt.ylabel("Petal Length")
+plt.title("Iris Dataset Visualization")
+plt.show()
+
+# Features and labels
+X = data.drop('species', axis=1)
+y = data['species']
+
+# Train-test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Train model
+model = RandomForestClassifier(n_estimators=100)
+model.fit(X_train, y_train)
+
+# Predictions
+predictions = model.predict(X_test)
+
+# Evaluate model
+accuracy = accuracy_score(y_test, predictions)
+print("\nModel Accuracy:", accuracy)
+
+print("\nClassification Report:")
+print(classification_report(y_test, predictions))
